@@ -1,0 +1,15 @@
+name: MinecraftPOO
+version: '${version}'
+main: com.soychristian.minecraftpoo.MinecraftPOO
+api-version: 1.19
+commands:
+  poo:
+    description: Poo
+    usage: /poo
+  evaluate:
+    description: Start evaluation
+    usage: /evaluate
+  registro:
+    description: Registrar estudiantes
+    usage: /registro <nickname> <nombre> <grado>
+
