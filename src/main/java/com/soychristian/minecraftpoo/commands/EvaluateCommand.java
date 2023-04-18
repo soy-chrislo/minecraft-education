@@ -1,5 +1,6 @@
 package com.soychristian.minecraftpoo.commands;
 
+import com.soychristian.minecraftpoo.MinecraftPOO;
 import com.soychristian.minecraftpoo.utils.DelayUtils;
 import com.soychristian.minecraftpoo.utils.PlayerUtils;
 import com.soychristian.minecraftpoo.views.EvaluateView;
@@ -8,10 +9,16 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 
 import java.util.ArrayList;
 
 public class EvaluateCommand implements CommandExecutor {
+
+    private MinecraftPOO plugin;
+    public EvaluateCommand(MinecraftPOO plugin) {
+        this.plugin = plugin;
+    }
     String pluginPrefix = "&6[&cMinecraftPOO&6]&r ";
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -32,7 +39,10 @@ public class EvaluateCommand implements CommandExecutor {
                             options.add("Una clase es un conjunto de métodos");
                             options.add("Una clase es un conjunto de atributos y métodos");
                             String answer = "Una clase es un conjunto de atributos y métodos";
-                            new EvaluateView().buildGui(p, question, options, answer);
+
+                            EvaluateView evaluateView = new EvaluateView(plugin);
+                            evaluateView.buildGui(p, question, options, answer);
+                            p.openInventory(evaluateView.getInventory());
                         }
                     };
 
