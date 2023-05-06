@@ -59,11 +59,56 @@ public class EvaluateUtils {
         try {
             bufferedReader = new BufferedReader(new FileReader(this.file));
             Type listType = new TypeToken<ArrayList<Pregunta>>(){}.getType();
+            // ! Returns an object of type T from the Reader. Returns null if json is at EOF.
             preguntasFichero = this.gson.fromJson(bufferedReader, listType);
             bufferedReader.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
         return preguntasFichero;
+    }
+
+    public MinecraftPOO getPlugin() {
+        return plugin;
+    }
+
+    public void setPlugin(MinecraftPOO plugin) {
+        this.plugin = plugin;
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
+    }
+
+    public Gson getGson() {
+        return gson;
+    }
+
+    public void setGson(Gson gson) {
+        this.gson = gson;
+    }
+
+    public FileWriter getFileWriter() {
+        return fileWriter;
+    }
+
+    public void setFileWriter(FileWriter fileWriter) {
+        this.fileWriter = fileWriter;
+    }
+
+    public BufferedReader getBufferedReader() {
+        return bufferedReader;
+    }
+
+    public void setBufferedReader(BufferedReader bufferedReader) {
+        this.bufferedReader = bufferedReader;
+    }
+
+    public void setPreguntas(ArrayList<Pregunta> preguntas) {
+        this.preguntas = preguntas;
     }
 }
