@@ -6,6 +6,10 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class PlayerFileFactory {
     private String playerName;
@@ -49,13 +53,13 @@ public class PlayerFileFactory {
 
 
     public void addPlayerData(String key, String value){
-        // Si ya Player se asigna en el constructor, la instancia se encuentra asociada a un Player.
         try {
             playerYaml.load(playerFile);
         } catch (Exception e){
             e.printStackTrace();
         }
         playerYaml.set(key, value);
+        savePlayerData();
     }
     public void setPlayerData(String key, String value){
         addPlayerData(key, value);
@@ -67,6 +71,7 @@ public class PlayerFileFactory {
             e.printStackTrace();
         }
         playerYaml.set(key, null);
+        savePlayerData();
     }
 
     // TODO: Probar método getPlayerData.
@@ -82,6 +87,38 @@ public class PlayerFileFactory {
             return "null";
         }
         return value;
+    }
+
+    public String[] getAllPlayerData(){
+        // Obtener todas las propiedades del yml, incluyendo clave - valor.
+        try {
+            playerYaml.load(playerFile);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        List<String> result = new ArrayList<>();
+        for (String key : playerYaml.getKeys(false)){
+            result.add(key + ": " + playerYaml.getString(key));
+        }
+        return result.toArray(new String[0]);
+    }
+
+    public void incrementProperty(String key, int increment){
+        try {
+            playerYaml.load(playerFile);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        int actualValue = 0;
+        try {
+            String stringValue = playerYaml.getString(key);
+            actualValue = Integer.parseInt(stringValue);
+        } catch (NumberFormatException e){
+            plugin.getLogger().info("No se ha podido convertir el valor " + playerYaml.getString(key) + " a entero.");
+            return;
+        }
+        playerYaml.set(key, String.valueOf(actualValue + increment));
+        savePlayerData();
     }
 
     public void savePlayerData(){

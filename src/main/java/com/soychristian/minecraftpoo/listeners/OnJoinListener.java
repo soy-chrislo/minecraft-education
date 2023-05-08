@@ -33,6 +33,9 @@ public class OnJoinListener implements Listener {
         }
 
         playerFileFactory = new PlayerFileFactory(plugin, player);
+        if (!player.hasPlayedBefore()){
+            playerFileFactory.addPlayerData("Points", "0");
+        }
         playerFileFactory.addPlayerData("UUID", player.getUniqueId().toString());
         playerFileFactory.addPlayerData("Name", player.getName());
         playerFileFactory.addPlayerData("DisplayName", player.getDisplayName());
