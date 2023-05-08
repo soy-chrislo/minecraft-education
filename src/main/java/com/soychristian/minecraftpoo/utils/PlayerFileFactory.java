@@ -4,6 +4,7 @@ import com.soychristian.minecraftpoo.MinecraftPOO;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ public class PlayerFileFactory {
     private String playerName;
     private Player player;
     private File playerFile;
+    private Inventory playerInventory;
     private YamlConfiguration playerYaml;
     private MinecraftPOO plugin;
 
@@ -74,7 +76,6 @@ public class PlayerFileFactory {
         savePlayerData();
     }
 
-    // TODO: Probar método getPlayerData.
     public String getPlayerData(String key){
         try {
             playerYaml.load(playerFile);
@@ -129,6 +130,7 @@ public class PlayerFileFactory {
         }
     }
 
+
     public String getPlayerName() {
         return playerName;
     }
@@ -167,5 +169,13 @@ public class PlayerFileFactory {
 
     public void setPlugin(MinecraftPOO plugin) {
         this.plugin = plugin;
+    }
+
+    public Inventory getPlayerInventory() {
+        return playerInventory;
+    }
+
+    public void setPlayerInventory(Inventory playerInventory) {
+        this.playerInventory = playerInventory;
     }
 }

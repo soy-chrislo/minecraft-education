@@ -12,4 +12,10 @@ commands:
   registro:
     description: Registrar estudiantes
     usage: /registro <nickname> <nombre> <grado>
+  manageitems:
+    description: Manage items
+    usage: /manageitems
+  menu:
+    description: Open menu
+    usage: /menu
 
