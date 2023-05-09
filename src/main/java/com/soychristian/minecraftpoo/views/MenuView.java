@@ -3,6 +3,7 @@ package com.soychristian.minecraftpoo.views;
 import com.soychristian.minecraftpoo.MinecraftPOO;
 import com.soychristian.minecraftpoo.exceptions.InvalidEncodedInventoryFormat;
 import com.soychristian.minecraftpoo.utils.InventoryUtils;
+import com.soychristian.minecraftpoo.utils.ItemUtils;
 import com.soychristian.minecraftpoo.utils.PlayerFileFactory;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -25,15 +26,8 @@ public class MenuView implements InventoryHolder, Listener {
         this.plugin = plugin;
         this.inventory = Bukkit.createInventory(this, 9, "Main Menu");
 
-        ItemStack saveInventory = new ItemStack(Material.CHEST, 1);
-        ItemMeta saveInventoryMeta = saveInventory.getItemMeta();
-        saveInventoryMeta.setDisplayName("Save Inventory");
-        saveInventory.setItemMeta(saveInventoryMeta);
-
-        ItemStack restoreInventory = new ItemStack(Material.CHEST, 1);
-        ItemMeta restoreInventoryMeta = restoreInventory.getItemMeta();
-        restoreInventoryMeta.setDisplayName("Restore Inventory");
-        restoreInventory.setItemMeta(restoreInventoryMeta);
+        ItemStack saveInventory = ItemUtils.getItem(Material.CHEST, "Save Inventory", "Guarda tu inventario actual");
+        ItemStack restoreInventory = ItemUtils.getItem(Material.CHEST, "Restore Inventory", "Restaura tu inventario guardado");
 
         this.inventory.setItem(0, saveInventory);
         this.inventory.setItem(1, restoreInventory);
@@ -53,12 +47,17 @@ public class MenuView implements InventoryHolder, Listener {
         PlayerFileFactory playerFileFactory;
         PlayerInventory playerInventory;
         String encodedInventory;
+        Inventory inventory;
         switch (event.getCurrentItem().getItemMeta().getDisplayName()) {
             case "Save Inventory":
                 player = (Player) event.getWhoClicked();
                 playerInventory = player.getInventory();
                 encodedInventory = InventoryUtils.encodeInventory(playerInventory);
                 playerFileFactory = new PlayerFileFactory(plugin, player);
+                if (playerFileFactory.getPlayerData("inventory") != null) {
+                    player.sendMessage("You already have a saved inventory!");
+                    break;
+                }
                 playerFileFactory.setPlayerData("inventory", encodedInventory);
                 player.getInventory().clear();
 
@@ -69,16 +68,18 @@ public class MenuView implements InventoryHolder, Listener {
                 player = (Player) event.getWhoClicked();
                 playerFileFactory = new PlayerFileFactory(plugin, player);
                 encodedInventory = playerFileFactory.getPlayerData("inventory");
-                Inventory inventory1;
                 // java.lang.ClassCastException: org.bukkit.craftbukkit.v1_8_R3.inventory.CraftInventoryCustom cannot be cast to org.bukkit.inventory.PlayerInventory
                 try {
-                    inventory1 = InventoryUtils.decodeInventory(encodedInventory);
+                    inventory = InventoryUtils.decodeInventory(encodedInventory);
                 } catch (Exception e) {
                     player.sendMessage("You don't have a saved inventory!");
                     e.printStackTrace();
                     break;
                 }
-                player.getInventory().setContents(inventory1.getContents());
+                for (ItemStack item : inventory.getContents()){
+                    if (item == null) continue;
+                    player.getInventory().addItem(item);
+                }
                 playerFileFactory.setPlayerData("inventory", null);
 
                 event.getWhoClicked().closeInventory();

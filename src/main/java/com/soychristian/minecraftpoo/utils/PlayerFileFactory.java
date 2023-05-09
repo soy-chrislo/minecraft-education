@@ -85,7 +85,7 @@ public class PlayerFileFactory {
         String value = playerYaml.getString(key);
         if (value == null){
             plugin.getLogger().info("No se ha encontrado el valor " + key + " en el fichero de datos del jugador " + playerName + " en " + this.playerFile.getAbsolutePath());
-            return "null";
+            return null;
         }
         return value;
     }
