@@ -1,6 +1,7 @@
 package com.soychristian.minecraftpoo;
 
 import com.soychristian.minecraftpoo.commands.*;
+import com.soychristian.minecraftpoo.helpers.AdminInventory;
 import com.soychristian.minecraftpoo.listeners.OnJoinListener;
 import com.soychristian.minecraftpoo.utils.EvaluateUtils;
 import com.soychristian.minecraftpoo.utils.PlayerFileFactory;
@@ -31,12 +32,14 @@ public final class MinecraftPOO extends JavaPlugin {
         this.getCommand("registro").setExecutor(new RegisterCommand());
         this.getCommand("manageitems").setExecutor(new ManageItemsCommand(this));
         this.getCommand("menu").setExecutor(new MenuCommand(this));
+        this.getCommand("admininventory").setExecutor(new AdminInventoryCommand(this));
     }
 
     public void registerEvents(){
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new OnJoinListener(this), this);
         pm.registerEvents(new MenuView(this), this);
+        pm.registerEvents(new AdminInventory( this), this);
         //getServer().getPluginManager().registerEvents(new EvaluateView(), this);
     }
 

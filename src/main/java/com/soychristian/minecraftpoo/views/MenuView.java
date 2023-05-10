@@ -2,6 +2,7 @@ package com.soychristian.minecraftpoo.views;
 
 import com.soychristian.minecraftpoo.MinecraftPOO;
 import com.soychristian.minecraftpoo.exceptions.InvalidEncodedInventoryFormat;
+import com.soychristian.minecraftpoo.helpers.AdminInventory;
 import com.soychristian.minecraftpoo.utils.InventoryUtils;
 import com.soychristian.minecraftpoo.utils.ItemUtils;
 import com.soychristian.minecraftpoo.utils.PlayerFileFactory;
@@ -28,9 +29,11 @@ public class MenuView implements InventoryHolder, Listener {
 
         ItemStack saveInventory = ItemUtils.getItem(Material.CHEST, "Save Inventory", "Guarda tu inventario actual");
         ItemStack restoreInventory = ItemUtils.getItem(Material.CHEST, "Restore Inventory", "Restaura tu inventario guardado");
+        ItemStack adminInventory = ItemUtils.getItem(Material.DIAMOND, "Admin Inventory", "Inventario compartido con la administracion");
 
         this.inventory.setItem(0, saveInventory);
         this.inventory.setItem(1, restoreInventory);
+        this.inventory.setItem(2, adminInventory);
     }
 
     @Override
@@ -82,8 +85,30 @@ public class MenuView implements InventoryHolder, Listener {
                 }
                 playerFileFactory.setPlayerData("inventory", null);
 
-                event.getWhoClicked().closeInventory();
-                event.getWhoClicked().sendMessage("Inventory restored!");
+                player.closeInventory();
+                player.sendMessage("Inventory restored!");
+                break;
+            case "Admin Inventory":
+                // TODO: Hacer la logica del inventario, que al cerrar se actualice y solo guarde los items que quedaron dentro.
+                // TODO: No permitir agregar items al inventario, solo retirarlos.
+                // TODO: Preparar desde la vista del administrador para que pueda acceder a los admin inventories de los usuarios para dejar cosas.
+                player = (Player) event.getWhoClicked();
+                playerFileFactory = new PlayerFileFactory(plugin, player);
+                encodedInventory = playerFileFactory.getPlayerData("adminInventory");
+                if (encodedInventory == null) {
+                    player.sendMessage("You don't have pending items from the admin!");
+                    break;
+                }
+                try {
+                    inventory = InventoryUtils.decodeInventory(encodedInventory);
+                } catch (Exception e) {
+                    player.sendMessage("You don't have pending items from the admin!");
+                    e.printStackTrace();
+                    break;
+                }
+                AdminInventory adminInventory = new AdminInventory(plugin);
+                Inventory inventoryView = adminInventory.getInventory(player.getName());
+                player.openInventory(inventoryView);
                 break;
         }
     }
